@@ -1,0 +1,48 @@
+#!/bin/bash
+
+INTERP=python
+DAEMON=/opt/web2py/applications/init/comet/comet_messaging.py
+ARGS2="-p 8889 -k PASSWORD"
+LOG=/var/log/comet.log
+
+function status {
+	pgrep -f "$DAEMON $ARGS2" >/dev/null 2>&1 || return 1
+	return 0
+}
+
+function stop {
+	pkill -f "$DAEMON $ARGS2"
+}
+
+function start {
+	nohup $INTERP $DAEMON $ARGS2 >>$LOG 2>&1 &
+}
+
+case $1 in
+restart)
+	stop
+	start
+	;;
+start)
+	status && {
+		echo "already started"
+		exit 0
+	}
+	start
+	;;
+stop)
+	stop
+	;;
+info)
+	echo "Name: comet"
+	;;
+status)
+	status
+	exit $?
+	;;
+*)
+	echo "unsupported action: $1" >&2
+	exit 1
+	;;
+esac
+

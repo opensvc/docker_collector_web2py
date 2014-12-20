@@ -1,0 +1,19 @@
+<uwsgi>
+    <plugin>python</plugin>
+    <socket>:8001</socket>
+    <pythonpath>/opt/web2py/</pythonpath>
+    <mount>/=wsgihandler:application</mount>
+    <master/>
+    <processes>4</processes>
+    <harakiri>60</harakiri>
+    <reload-mercy>8</reload-mercy>
+    <cpu-affinity>1</cpu-affinity>
+    <max-requests>500</max-requests>
+    <limit-as>1024</limit-as>
+    <reload-on-as>512</reload-on-as>
+    <reload-on-rss>512</reload-on-rss>
+    <uid>__UID__</uid>
+    <gid>__GID__</gid>
+    <no-orphans/>
+</uwsgi>
+
