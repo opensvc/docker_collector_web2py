@@ -34,4 +34,18 @@ sed -i -e "s/__GID__/$CUSTO_GID/" /etc/uwsgi/apps-enabled/uwsgi.xml
 	ln -s /conf/uwsgi.xml /etc/uwsgi/apps-enabled/uwsgi.xml
 }
 
+# import the collector ssh keys
+mkdir -p /home/collector/.ssh
+
+[ -f /conf/id_rsa.pub -a -f /conf/id_rsa ] && {
+        cp /conf/id_rsa* /home/collector/.ssh/
+}
+[ -f /conf/id_dsa.pub -a -f /conf/id_dsa ] && {
+        cp /conf/id_dsa* /home/collector/.ssh/
+}
+
+chown -R collector:collector /home/collector
+chmod 700 /home/collector/.ssh
+chmod 600 /home/collector/.ssh/id_*
+
 exit 0
