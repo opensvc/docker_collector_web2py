@@ -8,6 +8,7 @@ ADD ar/web2py-7b2b8155f94361764f0ef6a36b3c179ff758b2fc.zip /tmp/web2py.zip
 ADD cf/uwsgi.xml /etc/uwsgi/apps-enabled/
 ADD sh/scheduler /etc/init.d/scheduler
 ADD sh/alertd /etc/init.d/alertd
+ADD sh/actiond /etc/init.d/actiond
 ADD sh/comet /etc/init.d/comet
 ADD sh/setup.sh /setup.sh
 ADD sh/run.sh /run.sh
@@ -20,7 +21,7 @@ RUN mv /opt/web2py/applications/admin /tmp
 RUN rm -rf /opt/web2py/applications/examples
 RUN rm -rf /opt/web2py/applications/welcome
 
-RUN chmod +x /etc/init.d/comet /etc/init.d/scheduler /etc/init.d/alertd /setup.sh /run.sh
+RUN chmod +x /etc/init.d/comet /etc/init.d/scheduler /etc/init.d/alertd /etc/init.d/actiond /setup.sh /run.sh
 
 CMD /setup.sh && /run.sh
 
