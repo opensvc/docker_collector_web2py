@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DAEMON=/opt/web2py/web2py.py
-ARGS="-K init,init:janitor,init:insert_brocade,init:insert_nsr,init:insert_hds,init:insert_dcs,init:insert_necism,init:insert_eva,init:insert_sym,init:insert_emcvnx,init:insert_centerre,init:insert_ibmds,init:insert_vioserver,init:insert_netapp,init:insert_hp3par,init:ibmsvc,init:metrics,init:fast,init:slow,init:actions,init:_update_service,init:_push_checks,init:_insert_generic,init:_update_asset,init:_svcmon_update_combo,init:update_dash_netdev_errors,init:_insert_pkg,init:_insert_patch"
+ARGS="-K init,init:janitor,init:insert_brocade,init:insert_nsr,init:insert_hds,init:insert_dcs,init:insert_necism,init:insert_eva,init:insert_sym,init:insert_emcvnx,init:centerra,init:insert_centerre,init:insert_ibmds,init:insert_vioserver,init:insert_netapp,init:insert_hp3par,init:ibmsvc,init:metrics,init:fast,init:slow,init:actions,init:_update_service,init:_push_checks,init:_insert_generic,init:_update_asset,init:_svcmon_update_combo,init:update_dash_netdev_errors,init:_insert_pkg,init:_insert_patch"
 
 function status {
 	pgrep -f "$DAEMON $ARGS" >/dev/null 2>&1
