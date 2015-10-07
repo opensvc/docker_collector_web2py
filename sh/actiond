@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DAEMON=/opt/web2py/applications/init/alertd/actiond.py
+DAEMON=/opt/web2py/applications/init/actiond/actiond.py
 DAEMON_BASE=$(basename $DAEMON)
 
 function status {
