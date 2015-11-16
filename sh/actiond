@@ -11,14 +11,14 @@ case $1 in
 restart)
 	killall -9 $DAEMON_BASE
 	sleep 1
-	su - collector -c $DAEMON
+	su - collector -c "python2.7 $DAEMON"
 	;;
 start)
 	status && {
 		echo "already started"
 		exit 0
 	}
-	su - collector -c $DAEMON
+	su - collector -c "python2.7 $DAEMON"
 	;;
 stop)
 	killall -9 $DAEMON_BASE
