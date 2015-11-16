@@ -1,11 +1,11 @@
-FROM ubuntu:14.10
+FROM ubuntu:15.10
 MAINTAINER admin@opensvc.com
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y uwsgi-plugin-python uwsgi python-tornado python-yaml python-xmpp python-redis graphviz unzip openssh-client git && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y patch uwsgi-plugin-python uwsgi python-tornado python-yaml python-xmpp python-redis graphviz unzip openssh-client git && \
     apt-get clean
 
-ADD ar/web2py-7b2b8155f94361764f0ef6a36b3c179ff758b2fc.zip /tmp/web2py.zip
+ADD ar/web2py_src.zip /tmp/web2py.zip
 ADD cf/uwsgi.xml /etc/uwsgi/apps-enabled/
 ADD sh/scheduler /etc/init.d/scheduler
 ADD sh/alertd /etc/init.d/alertd
