@@ -45,6 +45,7 @@ mkdir -p /home/collector/.ssh
 }
 
 chown -R collector:collector /home/collector
+touch /opt/web2py/web2py.log
 chown collector:collector /opt/web2py
 chmod 700 /home/collector/.ssh
 chmod 600 /home/collector/.ssh/id_*
