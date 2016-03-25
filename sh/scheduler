@@ -8,11 +8,11 @@ function status {
 }
 
 function stop {
-	pkill -f "$DAEMON $ARGS"
+	pkill -9 -f "$DAEMON $ARGS"
 }
 
 function start {
-	nohup python2.7 $DAEMON $ARGS >/var/log/scheduler.log 2>&1 &
+	nohup su - collector -c "python2.7 $DAEMON $ARGS" >/var/log/scheduler.log 2>&1 &
 }
 
 case $1 in
