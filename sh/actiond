@@ -9,7 +9,7 @@ function status {
 
 case $1 in
 restart)
-	killall -9 $DAEMON_BASE
+	pkill -9 -f $DAEMON
 	sleep 1
 	su - collector -c "python2.7 $DAEMON"
 	;;
