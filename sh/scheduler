@@ -22,6 +22,7 @@ function cleanup {
 case $1 in
 restart)
 	stop
+	cleanup
 	start
 	;;
 start)
