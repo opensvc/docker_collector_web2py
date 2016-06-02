@@ -1,17 +1,23 @@
 #!/bin/bash
 
 DAEMON=/opt/web2py/web2py.py
-ARGS="-v -K init,init:janitor,init:storage,init:metrics,init:slow,init:svcmon_1,init:svcmon_2,init:generic_1,init:generic_2,init:dashboard,init:svcactions"
+ARGS="-v -K init,init:janitor,init:metrics,init:slow"
+RQS="svcmon svcactions storage dashboard generic"
 
-function status {
+function status_scheduler {
 	pgrep -f "$DAEMON $ARGS" >/dev/null 2>&1
 }
 
-function stop {
+function stop_scheduler {
 	pkill -9 -f "$DAEMON $ARGS"
 }
 
-function start {
+function start_scheduler {
+	status_scheduler && {
+		echo "scheduler already started"
+		return 0
+	}
+	cleanup
 	nohup su - collector -c "python2.7 $DAEMON $ARGS" >/var/log/scheduler.log 2>&1 &
 }
 
@@ -19,22 +25,80 @@ function cleanup {
 	su - collector -c "python2.7 $DAEMON -S feed/default/scheduler_cleanup"
 }
 
+function status_rq {
+	pgrep -f "$DAEMON -S feed/default/task_rq_$1" >/dev/null 2>&1
+}
+
+function start_rq {
+	status_rq $1 && {
+		echo "redis queue '$1' already started"
+		return 0
+	}
+	nohup su - collector -c "python2.7 $DAEMON -S feed/default/task_rq_$1" >/dev/null 2<&1 &
+}
+
+function stop_rq {
+	pkill -9 -f "python2.7 $DAEMON -S feed/default/task_rq_$1"
+}
+
+function status_rqs {
+	typeset -i r=0
+	for RQ in $RQS
+	do
+		status_rq $RQ || r=r+1
+	done
+	return r
+}
+
+function start_rqs {
+	for RQ in $RQS
+	do
+		start_rq $RQ
+	done
+}
+
+function stop_rqs {
+	for RQ in $RQS
+	do
+		stop_rq $RQ
+	done
+}
+
+function print_status {
+	[ $1 -eq 0 ] && echo -n "running" || echo -n "stopped"
+}
+
+function status {
+	typeset -i gr=0
+	typeset -i r=0
+	status_scheduler
+	r=$?
+	gr=gr+$r
+	echo "scheduler $(print_status $r)"
+	for RQ in $RQS
+	do
+		status_rq $RQ
+		r=$?
+		gr=gr+$r
+		echo "redis queue '$RQ' $(print_status $r)"
+	done
+	return $gr
+}
+
 case $1 in
 restart)
-	stop
-	cleanup
-	start
+	stop_scheduler
+	stop_rqs
+	start_scheduler
+	start_rqs
 	;;
 start)
-	status && {
-		echo "already started"
-		exit 0
-	}
-	cleanup
-	start
+	start_scheduler
+	start_rqs
 	;;
 stop)
-	stop
+	stop_scheduler
+	stop_rqs
 	;;
 cleanup)
 	cleanup
