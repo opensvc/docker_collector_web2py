@@ -44,6 +44,11 @@ mkdir -p /home/collector/.ssh
         cp /conf/id_dsa* /home/collector/.ssh/
 }
 
+# setup initial passwords
+[ ! -z "$CUSTO_PWD" ] && {
+        /opt/web2py/applications/init/scripts/change_password.py "$CUSTO_PWD"
+}
+
 chown -R collector:collector /home/collector
 touch /opt/web2py/web2py.log
 chown -R collector:collector /opt/web2py
