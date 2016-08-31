@@ -34,7 +34,7 @@ function start_rq {
 		echo "redis queue '$1' already started"
 		return 0
 	}
-	nohup su - collector -c "python2.7 $DAEMON -S feed/default/task_rq_$1" >/dev/null 2<&1 &
+	nohup su - collector -c "python2.7 $DAEMON -S feed/default/task_rq_$1" >/dev/null 2>&1 &
 }
 
 function stop_rq {
