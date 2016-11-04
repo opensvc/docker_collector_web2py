@@ -2,7 +2,10 @@ FROM ubuntu:16.10
 MAINTAINER admin@opensvc.com
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y patch uwsgi-plugin-python uwsgi python-mysqldb python-tornado python-yaml python-xmpp python-redis graphviz openssh-client git fping nodejs nodejs npm && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y patch uwsgi-plugin-python uwsgi python-mysqldb python-tornado python-yaml \
+                       python-xmpp python-redis graphviz openssh-client git fping nodejs nodejs npm \
+                       python-requests python-cryptography python-jwt vim && \
     apt-get clean
 
 ADD ar/web2py.tar.gz /opt
