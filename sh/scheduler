@@ -92,6 +92,18 @@ restart)
 	start_scheduler
 	start_rqs
 	;;
+start_rqs)
+	start_rqs
+	;;
+stop_rqs)
+	stop_rqs
+	;;
+start_scheduler)
+	start_scheduler
+	;;
+stop_scheduler)
+	stop_scheduler
+	;;
 start)
 	start_scheduler
 	start_rqs
@@ -112,6 +124,7 @@ status)
 	;;
 *)
 	echo "unsupported action: $1" >&2
+	echo "supported actions: restart start_rqs stop_rqs start_scheduler stop_scheduler start stop cleanup info status" >&2
 	exit 1
 	;;
 esac
