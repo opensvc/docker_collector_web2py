@@ -21,7 +21,7 @@ start)
 	su - collector -c "python2.7 $DAEMON"
 	;;
 stop)
-	killall -9 $DAEMON_BASE
+	pkill -9 -f $DAEMON
 	;;
 info)
 	echo "Name: actiond"
