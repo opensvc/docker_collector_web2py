@@ -2,7 +2,8 @@
 
 DAEMON=/opt/web2py/web2py.py
 ARGS="-v -K init,init:janitor,init:metrics,init:slow"
-RQS="svcmon svcactions storage dashboard generic"
+RQS="feed/default/task_rq_svcmon feed/default/task_rq_svcactions feed/default/task_rq_storage feed/default/task_rq_dashboard feed/default/task_rq_generic init/rest/task_rq_form_submit"
+
 
 function status_scheduler {
 	pgrep -f "$DAEMON $ARGS" >/dev/null 2>&1
@@ -26,7 +27,7 @@ function cleanup {
 }
 
 function status_rq {
-	pgrep -f "$DAEMON -S feed/default/task_rq_$1" >/dev/null 2>&1
+	pgrep -f "$DAEMON -S $1" >/dev/null 2>&1
 }
 
 function start_rq {
@@ -34,11 +35,11 @@ function start_rq {
 		echo "redis queue '$1' already started"
 		return 0
 	}
-	nohup su - collector -c "python2.7 $DAEMON -S feed/default/task_rq_$1" >/dev/null 2>&1 &
+	nohup su - collector -c "python2.7 $DAEMON -S $1" >/dev/null 2>&1 &
 }
 
 function stop_rq {
-	pkill -9 -f "python2.7 $DAEMON -S feed/default/task_rq_$1"
+	pkill -9 -f "python2.7 $DAEMON -S $1"
 }
 
 function status_rqs {
