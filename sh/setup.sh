@@ -44,6 +44,9 @@ mkdir -p /home/collector/.ssh
         cp /conf/id_dsa* /home/collector/.ssh/
 }
 
+# bootstrap an empty config file
+touch /opt/web2py/applications/init/modules/config.py
+
 # setup initial passwords
 [ ! -z "$CUSTO_PWD" ] && {
         /opt/web2py/applications/init/scripts/change_password.py "$CUSTO_PWD"
