@@ -21,5 +21,5 @@ RUN cp /opt/web2py/handlers/wsgihandler.py /opt/web2py/ && \
 
 RUN npm install vm2 -g
 
-CMD /setup.sh && /run.sh
+ENTRYPOINT /run.sh
 
