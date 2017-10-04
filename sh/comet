@@ -3,7 +3,8 @@
 INTERP=python
 DAEMON=/opt/web2py/applications/init/comet/comet_messaging.py
 ARGS2="-p 8889 -k PASSWORD"
-LOG=/var/log/comet.log
+#LOG=/var/log/comet.log
+LOG=/dev/null
 
 function status {
 	pgrep -f "$DAEMON $ARGS2" >/dev/null 2>&1 || return 1
