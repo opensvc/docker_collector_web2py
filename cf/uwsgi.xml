@@ -10,9 +10,9 @@
     <reload-mercy>8</reload-mercy>
     <cpu-affinity>1</cpu-affinity>
     <max-requests>500</max-requests>
-    <limit-as>1024</limit-as>
-    <reload-on-as>512</reload-on-as>
-    <reload-on-rss>512</reload-on-rss>
+    <limit-as>4096</limit-as>
+    <reload-on-as>2048</reload-on-as>
+    <reload-on-rss>2048</reload-on-rss>
     <uid>__UID__</uid>
     <gid>__GID__</gid>
     <no-orphans/>
