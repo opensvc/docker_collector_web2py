@@ -1,16 +1,16 @@
 #!/bin/bash
 
-DAEMON=/opt/web2py/web2py.py
-ARGS="-v -K init,init:janitor,init:metrics,init:slow"
-RQS="feed/default/task_rq_svcmon feed/default/task_rq_svcactions feed/default/task_rq_storage feed/default/task_rq_dashboard feed/default/task_rq_generic init/rest/task_rq_form_submit init/rest/task_rq_async"
+SCHED_BIN=/opt/web2py/web2py.py
+SCHED_ARGS=${SCHED_ARGS:-"-v -K init,init:janitor,init:metrics,init:slow"}
+TASK_RQS==${TASK_RQS:-"feed/default/task_rq_svcmon feed/default/task_rq_svcactions feed/default/task_rq_storage feed/default/task_rq_dashboard feed/default/task_rq_generic init/rest/task_rq_form_submit init/rest/task_rq_async"}
 
 
 function status_scheduler {
-	pgrep -f "$DAEMON $ARGS" >/dev/null 2>&1
+	pgrep -f "$SCHED_BIN $SCHED_ARGS" >/dev/null 2>&1
 }
 
 function stop_scheduler {
-	pkill -9 -f "$DAEMON $ARGS"
+	pkill -9 -f "$SCHED_BIN $SCHED_ARGS"
 }
 
 function start_scheduler {
@@ -19,15 +19,15 @@ function start_scheduler {
 		return 0
 	}
 	cleanup
-	nohup su - collector -c "python2.7 $DAEMON $ARGS" >/var/log/scheduler.log 2>&1 &
+	nohup su - collector -c "python2.7 $SCHED_BIN $SCHED_ARGS" >/var/log/scheduler.log 2>&1 &
 }
 
 function cleanup {
-	su - collector -c "python2.7 $DAEMON -S feed/default/scheduler_cleanup"
+	su - collector -c "python2.7 $SCHED_BIN -S feed/default/scheduler_cleanup"
 }
 
 function status_rq {
-	pgrep -f "$DAEMON -S $1" >/dev/null 2>&1
+	pgrep -f "$SCHED_BIN -S $1" >/dev/null 2>&1
 }
 
 function start_rq {
@@ -35,16 +35,16 @@ function start_rq {
 		echo "redis queue '$1' already started"
 		return 0
 	}
-	nohup su - collector -c "python2.7 $DAEMON -S $1" >/dev/null 2>&1 &
+	nohup su - collector -c "python2.7 $SCHED_BIN -S $1" >/dev/null 2>&1 &
 }
 
 function stop_rq {
-	pkill -9 -f "python2.7 $DAEMON -S $1"
+	pkill -9 -f "python2.7 $SCHED_BIN -S $1"
 }
 
 function status_rqs {
 	typeset -i r=0
-	for RQ in $RQS
+	for RQ in $TASK_RQS
 	do
 		status_rq $RQ || r=r+1
 	done
@@ -52,14 +52,14 @@ function status_rqs {
 }
 
 function start_rqs {
-	for RQ in $RQS
+	for RQ in $TASK_RQS
 	do
 		start_rq $RQ
 	done
 }
 
 function stop_rqs {
-	for RQ in $RQS
+	for RQ in $TASK_RQS
 	do
 		stop_rq $RQ
 	done
@@ -76,7 +76,7 @@ function status {
 	r=$?
 	gr=gr+$r
 	echo "scheduler $(print_status $r)"
-	for RQ in $RQS
+	for RQ in $TASK_RQS
 	do
 		status_rq $RQ
 		r=$?
