@@ -2,7 +2,7 @@
 
 SCHED_BIN=/opt/web2py/web2py.py
 SCHED_ARGS=${SCHED_ARGS:-"-v -K init,init:janitor,init:metrics,init:slow"}
-TASK_RQS==${TASK_RQS:-"feed/default/task_rq_svcmon feed/default/task_rq_svcactions feed/default/task_rq_storage feed/default/task_rq_dashboard feed/default/task_rq_generic init/rest/task_rq_form_submit init/rest/task_rq_async"}
+TASK_RQS=${TASK_RQS:-"feed/default/task_rq_svcmon feed/default/task_rq_svcactions feed/default/task_rq_storage feed/default/task_rq_dashboard feed/default/task_rq_generic init/rest/task_rq_form_submit init/rest/task_rq_async"}
 
 
 function status_scheduler {
