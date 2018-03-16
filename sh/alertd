@@ -1,26 +1,25 @@
 #!/bin/bash
 
 DAEMON=/opt/web2py/applications/init/alertd/alertd.py
-DAEMON_BASE=$(basename $DAEMON)
 
 function status {
-	pgrep $DAEMON_BASE >/dev/null 2>&1
+	pgrep -f "$DAEMON" >/dev/null 2>&1
 }
 
 case $1 in
 restart)
-	killall $DAEMON_BASE
-	su - collector -c "python2.7 $DAEMON"
+	pkill -f "$DAEMON"
+	su - collector -c "$DAEMON"
 	;;
 start)
 	status && {
 		echo "already started"
 		exit 0
 	}
-	su - collector "python2.7 $DAEMON"
+	su - collector -c "$DAEMON"
 	;;
 stop)
-	killall $DAEMON_BASE
+	pkill -f "$DAEMON"
 	;;
 info)
 	echo "Name: alertd"
@@ -34,3 +33,4 @@ status)
 	exit 1
 	;;
 esac
+
