@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:18.10
 MAINTAINER admin@opensvc.com
 
 RUN apt-get update && \
@@ -10,17 +10,17 @@ RUN apt-get update && \
     apt-get clean
 
 ADD ar/web2py.tar.gz /opt
-ADD cf/uwsgi.xml /etc/uwsgi/apps-enabled/
-ADD sh/scheduler sh/alertd sh/actiond sh/comet /etc/init.d/
-ADD sh/setup.sh sh/run.sh /
+COPY /docker-entrypoint.sh /
+COPY /docker-entrypoint.d/* /docker-entrypoint.d/
+ONBUILD COPY /docker-entrypoint.d/* /docker-entrypoint.d/
 
 WORKDIR /opt
 RUN cp /opt/web2py/handlers/wsgihandler.py /opt/web2py/ && \
     mv /opt/web2py/applications/admin /tmp && \
     rm -rf /opt/web2py/applications/* && \
-    chmod +x /etc/init.d/comet /etc/init.d/scheduler /etc/init.d/alertd /etc/init.d/actiond /setup.sh /run.sh
+    chmod +x /docker-entrypoint.sh /docker-entrypoint.d/*
 
 RUN npm install vm2 -g
 
-ENTRYPOINT /run.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
 

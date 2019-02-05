@@ -17,22 +17,9 @@ getent passwd $CUSTO_UID >/dev/null 2>&1 || useradd -u $CUSTO_UID -g $CUSTO_GID 
 	echo "password=\"opensvc\"" >/opt/web2py/parameters_443.py
 }
 
-# setup websocket server password
-sed -i -e "s/PASSWORD/$CUSTO_WS_PWD/" /etc/init.d/comet
-
 # install the admin web2py application in the mapping, if not already present
 test -d /opt/web2py/applications/admin || {
 	test -d /tmp/admin && mv /tmp/admin /opt/web2py/applications/
-}
-
-# setup uwsgi.xml
-sed -i -e "s/__UID__/$CUSTO_UID/" /etc/uwsgi/apps-enabled/uwsgi.xml
-sed -i -e "s/__GID__/$CUSTO_GID/" /etc/uwsgi/apps-enabled/uwsgi.xml
-
-# install custom uwsgi.xml
-[ -f /conf/uwsgi.xml ] && {
-	rm -f /etc/uwsgi/apps-enabled/uwsgi.xml
-	ln -s /conf/uwsgi.xml /etc/uwsgi/apps-enabled/uwsgi.xml
 }
 
 # import the collector ssh keys
