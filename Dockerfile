@@ -1,7 +1,9 @@
 FROM ubuntu:18.10
 MAINTAINER admin@opensvc.com
 
-RUN apt-get update && \
+RUN sed -i 's|archive.ubuntu|old-releases.ubuntu|g' /etc/apt/sources.list && \
+    sed -i '/security.ubuntu.com/d' /etc/apt/sources.list && \
+    apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y patch uwsgi-plugin-python uwsgi python-mysqldb python-tornado python-yaml \
                        python-xmpp python-redis graphviz openssh-client git fping nodejs nodejs npm \
