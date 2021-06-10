@@ -1,15 +1,19 @@
 FROM ubuntu:18.10
-MAINTAINER admin@opensvc.com
 
+LABEL vendor="OpenSVC"
+LABEL maintainer="admin@opensvc.com"
+ 
 RUN sed -i 's|archive.ubuntu|old-releases.ubuntu|g' /etc/apt/sources.list && \
     sed -i '/security.ubuntu.com/d' /etc/apt/sources.list && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y patch uwsgi-plugin-python uwsgi python-mysqldb python-tornado python-yaml \
+    apt-get install --no-install-recommends -y patch uwsgi-plugin-python uwsgi python-mysqldb python-tornado python-yaml \
                        python-xmpp python-redis graphviz openssh-client git fping nodejs nodejs npm \
                        python-requests python-cryptography python-jwt python-ldap vim phantomjs \
-                       xvfb python-whisper curl && \
+                       xvfb python-whisper python-pip curl && \
     apt-get clean
+
+RUN python -m pip install --upgrade pip && pip install setuptools && pip install uwsgitop
 
 RUN curl -L -o- https://github.com/web2py/web2py/archive/R-2.14.1.tar.gz | tar xzf - -C /opt && \
     mv /opt/web2py-R-2.14.1 /opt/web2py
