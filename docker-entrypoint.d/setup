@@ -26,24 +26,34 @@ test -d /opt/web2py/applications/admin || {
 mkdir -p /home/collector/.ssh
 
 [ -f /conf/id_rsa.pub -a -f /conf/id_rsa ] && {
-        cp /conf/id_rsa* /home/collector/.ssh/
+	cp /conf/id_rsa* /home/collector/.ssh/
 }
 [ -f /conf/id_dsa.pub -a -f /conf/id_dsa ] && {
-        cp /conf/id_dsa* /home/collector/.ssh/
+	cp /conf/id_dsa* /home/collector/.ssh/
 }
+chmod 700 /home/collector/.ssh
+chmod 600 /home/collector/.ssh/id_*
 
 # bootstrap an empty config file
 touch /opt/web2py/applications/init/modules/config.py
 
 # setup initial passwords
 [ ! -z "$CUSTO_PWD" -a ! -f /opt/web2py/applications/init/actiond/config.py ] && {
-        /opt/web2py/applications/init/scripts/change_password.py "$CUSTO_PWD"
+	/opt/web2py/applications/init/scripts/change_password.py "$CUSTO_PWD"
 }
 
-chown -R collector:collector /home/collector
+[ "$(stat --format '%U' /home/collector)" != "collector" ] && {
+	chown -R collector:collector /home/collector
+}
+
 touch /opt/web2py/web2py.log
-chown -R collector:collector /opt/web2py
-chmod 700 /home/collector/.ssh
-chmod 600 /home/collector/.ssh/id_*
+chown -R collector:collector /opt/web2py/web2py.log
+
+[ "$(stat --format '%U' /opt/web2py)" != "collector" ] && {
+	find /opt/web2py -xdev -exec chown -R collector:collector {} \;
+}
+[ "$(stat --format '%U' /opt/web2py/applications)" != "collector" ] && {
+	chown -R collector:collector /opt/web2py/applications
+}
 
 exit 0
