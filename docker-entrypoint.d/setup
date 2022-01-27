@@ -10,7 +10,7 @@ CUSTO_WS_PWD=${CUSTO_WS_PWD:-magix123}
 
 # create user to match mapping ids
 getent group $CUSTO_GID >/dev/null 2>&1 || groupadd -g $CUSTO_GID collector
-getent passwd $CUSTO_UID >/dev/null 2>&1 || useradd -u $CUSTO_UID -g $CUSTO_GID collector
+getent passwd $CUSTO_UID >/dev/null 2>&1 || useradd -m -u $CUSTO_UID -g $CUSTO_GID collector
 
 # setup web2py admin password
 [ ! -f /opt/web2py/parameters_443.py ] && {
@@ -26,33 +26,36 @@ test -d /opt/web2py/applications/admin || {
 mkdir -p /home/collector/.ssh
 
 [ -f /conf/id_rsa.pub -a -f /conf/id_rsa ] && {
+	echo "Copy RSA keys to /home/collector/.ssh/"
 	cp /conf/id_rsa* /home/collector/.ssh/
 }
 [ -f /conf/id_dsa.pub -a -f /conf/id_dsa ] && {
+	echo "Copy DSA keys to /home/collector/.ssh/"
 	cp /conf/id_dsa* /home/collector/.ssh/
 }
 chmod 700 /home/collector/.ssh
 chmod 600 /home/collector/.ssh/id_*
+chown -R collector:collector /home/collector/.ssh
 
 # bootstrap an empty config file
 touch /opt/web2py/applications/init/modules/config.py
 
 # setup initial passwords
 [ ! -z "$CUSTO_PWD" -a ! -f /opt/web2py/applications/init/actiond/config.py ] && {
+	echo "Setup initial passwords"
 	/opt/web2py/applications/init/scripts/change_password.py "$CUSTO_PWD"
 }
 
-[ "$(stat --format '%U' /home/collector)" != "collector" ] && {
-	chown -R collector:collector /home/collector
-}
-
 touch /opt/web2py/web2py.log
-chown -R collector:collector /opt/web2py/web2py.log
+chown collector:collector /opt/web2py/web2py.log
 
 [ "$(stat --format '%U' /opt/web2py)" != "collector" ] && {
-	find /opt/web2py -xdev -exec chown -R collector:collector {} \;
+	echo "Fix /opt/web2py ownership"
+	find /opt/web2py -xdev -exec chown collector:collector {} \;
 }
-[ "$(stat --format '%U' /opt/web2py/applications)" != "collector" ] && {
+
+[ "$(stat --format '%U' /opt/web2py/applications/init)" != "collector" ] && {
+	echo "Fix /opt/web2py/applications ownership"
 	chown -R collector:collector /opt/web2py/applications
 }
 

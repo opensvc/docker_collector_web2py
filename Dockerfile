@@ -28,6 +28,7 @@ WORKDIR /opt
 RUN cp /opt/web2py/handlers/wsgihandler.py /opt/web2py/ && \
     mv /opt/web2py/applications/admin /tmp && \
     rm -rf /opt/web2py/applications/* && \
+    chown -R 1000:1000 /opt/web2py && \
     chmod +x /docker-entrypoint.sh /docker-entrypoint.d/*
 
 RUN npm install vm2 -g
