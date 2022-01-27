@@ -7,6 +7,7 @@
 CUSTO_UID=${CUSTO_UID:-1000}
 CUSTO_GID=${CUSTO_GID:-1000}
 CUSTO_WS_PWD=${CUSTO_WS_PWD:-magix123}
+SETUP_DATA=${SETUP_DATA:-no}
 
 # create user to match mapping ids
 getent group $CUSTO_GID >/dev/null 2>&1 || groupadd -g $CUSTO_GID collector
@@ -54,9 +55,11 @@ chown collector:collector /opt/web2py/web2py.log
 	find /opt/web2py -xdev -exec chown collector:collector {} \;
 }
 
-[ "$(stat --format '%U' /opt/web2py/applications/init)" != "collector" ] && {
-	echo "Fix /opt/web2py/applications ownership"
-	chown -R collector:collector /opt/web2py/applications
-}
+if [ "${SETUP_DATA}" = 'yes' ]; then
+    [ "$(stat --format '%U' /opt/web2py/applications/init)" != "collector" ] && {
+		echo "Fix /opt/web2py/applications ownership"
+		chown -R collector:collector /opt/web2py/applications
+    }
+fi
 
 exit 0
