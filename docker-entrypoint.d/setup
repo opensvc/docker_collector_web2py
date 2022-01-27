@@ -34,7 +34,7 @@ mkdir -p /home/collector/.ssh
 	cp /conf/id_dsa* /home/collector/.ssh/
 }
 chmod 700 /home/collector/.ssh
-chmod 600 /home/collector/.ssh/id_*
+find /home/collector/.ssh/ -name 'id_*' -exec chmod 600 {} \;
 chown -R collector:collector /home/collector/.ssh
 
 # bootstrap an empty config file
