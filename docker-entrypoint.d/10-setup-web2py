@@ -18,8 +18,14 @@ getent group $CUSTO_GID >/dev/null 2>&1 || groupadd -g $CUSTO_GID collector
 getent passwd $CUSTO_UID >/dev/null 2>&1 || useradd -m -u $CUSTO_UID -g $CUSTO_GID collector
 
 # setup web2py admin password
-[ ! -f /opt/web2py/parameters_443.py ] && {
-	echo "password=\"opensvc\"" >/opt/web2py/parameters_443.py
+# CUSTO_WEB2PY_ADMIN_CONSOLE_PWD has to be defined to enable web2py admin console
+pgrep -f "/bin/bash /docker-entrypoint.sh /usr/bin/uwsgi" && {
+	[ ! -z "$CUSTO_WEB2PY_ADMIN_CONSOLE_PWD" ] && {
+		echo "Initializing web2py admin password"
+		cd /opt/web2py && \
+		python -c "from gluon.main import save_password; import os; pw=os.environ['CUSTO_WEB2PY_ADMIN_CONSOLE_PWD']; save_password(pw, 443)" && \
+		chown collector:collector parameters_443.py
+	}
 }
 
 # install the admin web2py application in the mapping, if not already present
@@ -44,12 +50,6 @@ chown -R collector:collector /home/collector/.ssh
 
 # bootstrap an empty config file
 touch /opt/web2py/applications/init/modules/config.py
-
-# setup initial passwords
-[ ! -z "$CUSTO_PWD" -a ! -f /opt/web2py/applications/init/actiond/config.py ] && {
-	echo "Setup initial passwords"
-	/opt/web2py/applications/init/scripts/change_password.py "$CUSTO_PWD"
-}
 
 touch /opt/web2py/web2py.log
 chown collector:collector /opt/web2py/web2py.log
