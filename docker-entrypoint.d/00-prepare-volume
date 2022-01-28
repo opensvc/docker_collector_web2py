@@ -1,0 +1,23 @@
+#!/bin/bash
+
+OPENSVC_COLLECTOR_REPO=${OPENSVC_COLLECTOR_REPO:-https://github.com/opensvc/collector.git}
+CUSTO_UID=${CUSTO_UID:-1000}
+CUSTO_GID=${CUSTO_GID:-1000}
+
+[ -d /volume ] && {
+    mkdir -p /volume/data/db /volume/conf/db /volume/conf/nginx /volume/data/web2py/applications
+    [ -d /volume/data/web2py/applications/init ] || {
+	echo "Initial collector deployment"
+        rm -rf /volume/data/web2py/applications/admin && \
+        git clone ${OPENSVC_COLLECTOR_REPO} /volume/data/web2py/applications && \
+        chown -R ${CUSTO_UID}:${CUSTO_GID} /volume/data/web2py/applications && \
+        mkdir -p /volume/data/web2py/applications/init/modules && \
+        touch /volume/data/web2py/applications/init/modules/config.py
+    }
+    [ "$(stat --format '%u:%g' /volume/data/web2py/applications/init)" != "${CUSTO_UID}:${CUSTO_GID}" ] && {
+        echo "Fix /volume/data/web2py/applications ownership"
+        chown -R ${CUSTO_UID}:${CUSTO_GID} /opt/web2py/applications
+    }
+}
+
+exit 0
