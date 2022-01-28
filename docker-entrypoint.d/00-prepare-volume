@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[ -f /conf/env ] && . /conf/env
+
 OPENSVC_COLLECTOR_REPO=${OPENSVC_COLLECTOR_REPO:-https://github.com/opensvc/collector.git}
 CUSTO_UID=${CUSTO_UID:-1000}
 CUSTO_GID=${CUSTO_GID:-1000}
@@ -16,7 +18,7 @@ CUSTO_GID=${CUSTO_GID:-1000}
     }
     [ "$(stat --format '%u:%g' /volume/data/web2py/applications/init)" != "${CUSTO_UID}:${CUSTO_GID}" ] && {
         echo "Fix /volume/data/web2py/applications ownership"
-        chown -R ${CUSTO_UID}:${CUSTO_GID} /opt/web2py/applications
+        chown -R ${CUSTO_UID}:${CUSTO_GID} /volume/data/web2py/applications
     }
 }
 
