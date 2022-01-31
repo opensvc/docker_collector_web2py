@@ -29,8 +29,11 @@ pgrep -f "/bin/bash /docker-entrypoint.sh /usr/bin/uwsgi" && {
 }
 
 # install the admin web2py application in the mapping, if not already present
-test -d /opt/web2py/applications/admin || {
-	test -d /tmp/admin && mv /tmp/admin /opt/web2py/applications/
+[ -d /opt/web2py/applications/admin ] || {
+	test -d /tmp/admin && \
+	mv /tmp/admin /opt/web2py/applications/ && \
+	cd /opt/web2py/applications/admin/static && \
+	ln -s . _2.14.1
 }
 
 # import the collector ssh keys
