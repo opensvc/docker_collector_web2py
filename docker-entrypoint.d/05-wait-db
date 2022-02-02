@@ -1,0 +1,19 @@
+#!/bin/bash
+
+CUSTO_DB_TIMEOUT=${CUSTO_DB_TIMEOUT:-60}
+
+[ ! -d /volume ] && {
+	until [ ${CUSTO_DB_TIMEOUT} -eq 0 ]
+	do
+		echo "Waiting ${CUSTO_DB_TIMEOUT} seconds for database to be available"
+		bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/3306' 2>/dev/null && {
+			echo -e "\ndatabase ready"
+			exit 0
+		}
+		((CUSTO_DB_TIMEOUT--))
+		sleep 1
+	done
+	exit 1
+}
+
+exit 0
