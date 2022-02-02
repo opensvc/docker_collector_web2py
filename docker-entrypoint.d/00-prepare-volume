@@ -3,6 +3,7 @@
 [ -f /conf/env ] && . /conf/env
 
 OPENSVC_COLLECTOR_REPO=${OPENSVC_COLLECTOR_REPO:-https://github.com/opensvc/collector.git}
+OPENSVC_GIT_CLONE_OPTS=${OPENSVC_GIT_CLONE_OPTS}
 CUSTO_UID=${CUSTO_UID:-1000}
 CUSTO_GID=${CUSTO_GID:-1000}
 
@@ -11,7 +12,7 @@ CUSTO_GID=${CUSTO_GID:-1000}
     [ -d /volume/data/web2py/applications/init ] || {
 	echo "Initial collector deployment"
         rm -rf /volume/data/web2py/applications/admin && \
-        git clone ${OPENSVC_COLLECTOR_REPO} /volume/data/web2py/applications && \
+        git ${OPENSVC_GIT_CLONE_OPTS} clone ${OPENSVC_COLLECTOR_REPO} /volume/data/web2py/applications && \
         chown -R ${CUSTO_UID}:${CUSTO_GID} /volume/data/web2py/applications && \
         mkdir -p /volume/data/web2py/applications/init/modules && \
         touch /volume/data/web2py/applications/init/modules/config.py
