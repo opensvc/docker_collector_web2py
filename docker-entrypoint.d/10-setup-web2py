@@ -34,6 +34,7 @@ pgrep -f "/bin/bash /docker-entrypoint.sh /usr/bin/uwsgi" && {
 	mv /tmp/admin /opt/web2py/applications/ && \
 	cd /opt/web2py/applications/admin/static && \
 	ln -s . _2.14.1
+	chown -Rh collector:collector /opt/web2py/applications/admin
 }
 
 # import the collector ssh keys
