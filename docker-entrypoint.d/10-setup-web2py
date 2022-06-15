@@ -55,6 +55,10 @@ chown -R collector:collector /home/collector/.ssh
 # bootstrap an empty config file
 touch /opt/web2py/applications/init/modules/config.py
 
+[ ! -f /opt/web2py/applications/__init__.py ] && {
+	touch /opt/web2py/applications/__init__.py
+}
+
 touch /opt/web2py/web2py.log
 chown collector:collector /opt/web2py/web2py.log
 
